@@ -1,0 +1,275 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>StudyMind AI 2.0 — Verity</title>
+<style>
+:root{--bg:#08080d;--panel:#12121d;--gold:#e9c45a;--purple:#a47aff;--text:#f5f2ff;--muted:#aaa4bb;--border:#302a42}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px Arial,sans-serif}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.app{display:grid;grid-template-columns:225px 1fr;min-height:100vh}
+aside{padding:20px 12px;background:#0d0c14;border-right:1px solid var(--border)}
+.logo{padding:10px;color:var(--gold);font-weight:bold;font-size:20px}
+.logo small{display:block;color:var(--purple);font-size:10px;letter-spacing:3px;margin-top:8px}
+.nav{display:block;width:100%;padding:13px;text-align:left;background:transparent;color:var(--muted);border:1px solid transparent;border-radius:9px;margin:5px 0}
+.nav:hover,.nav.active{background:#1a1725;color:var(--gold);border-color:var(--border)}
+.note{font-size:12px;color:var(--muted);margin-top:40px;line-height:1.7}
+main{padding:24px;max-width:1200px;width:100%;margin:auto;min-width:0}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--border);padding-bottom:18px;margin-bottom:22px}
+h1{font-size:clamp(23px,4vw,32px);margin:7px 0}
+h2,h3{margin-top:0}
+.status{font-size:11px;color:var(--gold);letter-spacing:1px}
+.page{display:none}.page.active{display:block}
+.card{padding:20px;background:var(--panel);border:1px solid var(--border);border-radius:14px;margin-bottom:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px}
+.muted{color:var(--muted);line-height:1.6}
+.big{font-size:30px;color:var(--gold);font-weight:bold}
+button.primary{background:var(--gold);color:#17120a;border:0;border-radius:8px;padding:11px 15px;font-weight:bold}
+button.secondary{background:#1b1926;color:var(--text);border:1px solid var(--border);border-radius:8px;padding:11px 15px}
+button:disabled{opacity:.5}
+textarea,input,select{width:100%;padding:12px;color:var(--text);background:#090910;border:1px solid var(--border);border-radius:8px}
+textarea{min-height:100px;resize:vertical}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.chat{height:350px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;margin-bottom:14px}
+.message{padding:13px 15px;border-radius:12px;max-width:92%;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55}
+.message.user{align-self:flex-end;background:#2a2440}
+.message.verity{align-self:flex-start;background:#1b1725;border:1px solid #47315f}
+.who{font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:6px}
+.quiz-option{display:block;width:100%;padding:13px;text-align:left;background:#1b1926;color:var(--text);border:1px solid var(--border);border-radius:8px;margin:8px 0}
+.quiz-option:hover{border-color:var(--gold)}
+.history-item{padding:12px 0;border-bottom:1px solid var(--border);overflow-wrap:anywhere}
+footer{font-size:11px;color:var(--muted);padding:20px 0}
+@media(max-width:700px){.app{grid-template-columns:1fr}aside{display:flex;gap:4px;overflow-x:auto;position:sticky;top:0;z-index:5;padding:8px}.logo,.note{display:none}.nav{white-space:nowrap;width:auto;margin:0;padding:10px}main{padding:14px}header{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+<div class="logo">STUDYMIND AI<small>VERITY EDITION · 2.0</small></div>
+<button class="nav active" data-page="overview">◈ Overview</button>
+<button class="nav" data-page="chat">◉ Verity Chat</button>
+<button class="nav" data-page="study">▤ Study Studio</button>
+<button class="nav" data-page="quiz">◆ Quick Quiz</button>
+<button class="nav" data-page="screen">▣ Screen Access</button>
+<button class="nav" data-page="history">◷ History</button>
+<div class="note">VERITY SYSTEM<br>FREE LOCAL MODE<br><span style="color:var(--purple)">Observing the obvious.</span></div>
+</aside>
+
+<main>
+<header>
+<div><div class="status">● SYSTEM ONLINE · LOCAL MODE</div><h1 id="pageTitle">Welcome back.</h1></div>
+<button class="secondary" id="clearChat">Clear chat</button>
+</header>
+
+<section class="page active" id="overview">
+<div class="card">
+<p style="color:var(--purple)">YOUR PERSONAL STUDY INTELLIGENCE</p>
+<h2>“I hope you brought your brain.”</h2>
+<p class="muted">Study, investigate problems, challenge your answers and catch careless mistakes.</p>
+<button class="primary" data-go="chat">Talk to Verity →</button>
+</div>
+<div class="grid">
+<div class="card"><div class="muted">Questions asked</div><div class="big" id="statQuestions">0</div></div>
+<div class="card"><div class="muted">Quiz attempts</div><div class="big" id="statQuizzes">0</div></div>
+<div class="card"><div class="muted">Correct answers</div><div class="big" id="statCorrect">0</div></div>
+</div>
+<div class="card"><h3>System notice</h3><p class="muted">This free version runs in your browser. Real AI answers require connecting an AI service. Screen sharing below is permission-based and does not automatically analyse your screen.</p></div>
+</section>
+
+<section class="page" id="chat">
+<div class="card">
+<div class="chat" id="chatMessages" aria-live="polite"></div>
+<textarea id="chatInput" placeholder="Ask Verity anything... (Ctrl + Enter to send)"></textarea>
+<div class="actions"><button class="primary" id="sendBtn">Send ↗</button><button class="secondary" id="clearInput">Clear input</button></div>
+<p class="muted">Local demo mode — no paid API or subscription needed for these features.</p>
+</div>
+</section>
+
+<section class="page" id="study">
+<div class="card">
+<h2>Study Studio</h2><p class="muted">Make a study plan, revision template or practice set.</p>
+<label>Subject</label><input id="subject" placeholder="e.g. Mathematics">
+<br><br><label>Topic and level</label><textarea id="topic" placeholder="e.g. Secondary 1 fractions and ratios"></textarea>
+<div class="actions"><button class="primary" data-study="plan">Study plan</button><button class="secondary" data-study="notes">Revision notes</button><button class="secondary" data-study="questions">Practice set</button></div>
+<hr><div id="studyOutput" class="muted">Your study material will appear here.</div>
+</div>
+</section>
+
+<section class="page" id="quiz">
+<div class="card">
+<h2>Quick Quiz</h2><label>Subject</label>
+<select id="quizSubject"><option value="math">Mathematics</option><option value="science">Science</option><option value="english">English</option></select>
+<br><br><button class="primary" id="newQuiz">Start quiz</button><hr>
+<div id="quizArea">Choose a subject and start.</div><p id="quizFeedback"></p><div class="muted" id="quizScore"></div>
+</div>
+</section>
+
+<section class="page" id="screen">
+<div class="card">
+<h2>Screen Access</h2>
+<p class="muted">You decide when to share your screen. This page can preview it locally but cannot automatically understand the image.</p>
+<div class="actions"><button class="primary" id="startScreen">Share screen</button><button class="secondary" id="stopScreen">Stop sharing</button></div>
+<video id="screenVideo" autoplay muted playsinline style="display:none;width:100%;margin-top:16px;border-radius:10px"></video>
+<p id="screenStatus" class="muted">Screen sharing is off.</p>
+</div>
+</section>
+
+<section class="page" id="history">
+<div class="card"><h2>Conversation History</h2><p class="muted">Saved in this browser only.</p>
+<div class="actions"><button class="secondary" id="exportHistory">Export history</button><button class="secondary" id="deleteHistory">Delete history</button></div>
+<div id="historyList"></div>
+</div>
+</section>
+<footer>STUDYMIND AI · VERITY EDITION · FREE BROWSER VERSION</footer>
+</main>
+</div>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const defaultState={messages:[],questions:0,quizzes:0,correct:0};
+let state;
+try{state={...defaultState,...JSON.parse(localStorage.getItem("verityState")||"{}")}}
+catch(e){state={...defaultState}}
+let stream=null,quizList=[],quizIndex=0,answered=false;
+
+const titles={overview:"Welcome back.",chat:"Verity Chat",study:"Study Studio",quiz:"Quick Quiz",screen:"Screen Access",history:"History"};
+function save(){try{localStorage.setItem("verityState",JSON.stringify(state))}catch(e){}stats();renderHistory()}
+function stats(){$("statQuestions").textContent=state.questions;$("statQuizzes").textContent=state.quizzes;$("statCorrect").textContent=state.correct}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function page(name){
+ document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id===name));
+ document.querySelectorAll(".nav").forEach(x=>x.classList.toggle("active",x.dataset.page===name));
+ $("pageTitle").textContent=titles[name]||"Verity";
+ if(name==="history")renderHistory();
+}
+document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>page(b.dataset.page));
+document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>page(b.dataset.go));
+
+function addMessage(role,text,store=true){
+ const m={role,text:String(text),time:new Date().toISOString()};
+ const el=document.createElement("div");el.className="message "+role;
+ el.innerHTML='<div class="who">'+(role==="user"?"YOU":"VERITY")+'</div>'+esc(m.text);
+ $("chatMessages").appendChild(el);$("chatMessages").scrollTop=$("chatMessages").scrollHeight;
+ if(store){state.messages.push(m);save()}
+}
+function reply(text){
+ const s=text.toLowerCase().trim();
+ if(!s)return "You sent absolutely nothing. A bold intellectual strategy.";
+ if(/\b(hi|hello|hey)\b/.test(s))return "Oh, good. A human has arrived. What are we solving today?";
+ if(s.includes("who are you"))return "I'm Verity. Your study companion and professional spotter of avoidable mistakes.";
+ if(s.includes("what is 1+1")||s.includes("what is 1 + 1"))return "Two. I resisted the urge to make that more dramatic.";
+ if(s.includes("thank"))return "You're welcome. Try not to look so surprised.";
+ if(s.includes("bye"))return "Leaving so soon? Where is my goodbye?";
+ if(s.includes("help"))return "Give me the subject, the topic and what is confusing you. I'm clever, not telepathic.";
+ if(s.includes("study"))return "Pick one topic. Review the key idea. Solve questions without notes. Check every mistake. Which subject?";
+ if(s.endsWith("?"))return "Interesting question. This browser version doesn't have a real AI model connected yet, so I can't reliably answer everything. Connect an AI backend for real AI answers.";
+ return "Noted. Give me more context so we can investigate properly. I'm currently running in local demo mode.";
+}
+async function send(){
+ const text=$("chatInput").value.trim();if(!text)return;
+ $("chatInput").value="";addMessage("user",text);state.questions++;save();
+ $("sendBtn").disabled=true;$("sendBtn").textContent="Thinking...";
+ await new Promise(r=>setTimeout(r,350));
+ addMessage("verity",reply(text));
+ $("sendBtn").disabled=false;$("sendBtn").textContent="Send ↗";
+}
+$("sendBtn").onclick=send;
+$("chatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)){e.preventDefault();send()}});
+$("clearInput").onclick=()=>$("chatInput").value="";
+$("clearChat").onclick=()=>{
+ $("chatMessages").innerHTML="";state.messages=[];save();
+ addMessage("verity","A fresh conversation. Try to make this one interesting.");
+};
+
+const studyTemplates={
+ plan:(s,t)=>`STUDY PLAN — ${s}\nTopic: ${t}\n\n1. Spend 5 minutes writing what you already know.\n2. Review the key rules and definitions for 10 minutes.\n3. Work through two examples.\n4. Try five questions without notes.\n5. Mark your work and explain each mistake.\n6. Test yourself again tomorrow.\n\nVerity's advice: Reading a page repeatedly isn't the same as learning it.`,
+ notes:(s,t)=>`REVISION TEMPLATE — ${s}\nTopic: ${t}\n\nKEY IDEA:\nWrite the main concept in one sentence.\n\nIMPORTANT FACTS:\n• Definition:\n• Rule or formula:\n• Example:\n• Common mistake:\n\nSELF-TEST:\nCan you explain the idea without looking at your notes?\n\nThis is a template, not verified topic-specific facts.`,
+ questions:(s,t)=>`PRACTICE SET — ${s}\nTopic: ${t}\n\n1. Define the main idea.\n2. Give an example.\n3. Solve a typical question.\n4. Explain why a common wrong answer is incorrect.\n5. Create a harder question and solve it.\n\nThis offline version provides a practice structure, not custom AI-generated questions.`
+};
+document.querySelectorAll("[data-study]").forEach(b=>b.onclick=()=>{
+ const s=$("subject").value.trim()||"Your subject",t=$("topic").value.trim()||"your chosen topic";
+ $("studyOutput").textContent=studyTemplates[b.dataset.study](s,t);
+});
+
+const quizzes={
+ math:[
+ {q:"What is 3/4 as a percentage?",o:["25%","50%","75%","80%"],a:2,w:"3 ÷ 4 = 0.75 = 75%."},
+ {q:"Solve 5x = 35.",o:["5","6","7","8"],a:2,w:"Divide both sides by 5: x = 7."},
+ {q:"Area of a rectangle 8 cm by 3 cm?",o:["11 cm²","22 cm²","24 cm²","48 cm²"],a:2,w:"Area = length × width = 24 cm²."}
+ ],
+ science:[
+ {q:"Which organ pumps blood?",o:["Lungs","Heart","Liver","Kidneys"],a:1,w:"The heart pumps blood through the circulatory system."},
+ {q:"Which process lets green plants make food using light?",o:["Digestion","Respiration","Photosynthesis","Evaporation"],a:2,w:"Photosynthesis uses light energy to make glucose."},
+ {q:"What is the SI unit of force?",o:["Joule","Watt","Newton","Pascal"],a:2,w:"Force is measured in newtons (N)."}
+ ],
+ english:[
+ {q:"Choose the correct sentence.",o:["She go to school.","She goes to school.","She going school.","She gone to school."],a:1,w:"Use 'goes' with 'she' in the simple present."},
+ {q:"Closest meaning to 'reluctant'?",o:["Eager","Unwilling","Certain","Cheerful"],a:1,w:"Reluctant means unwilling or hesitant."},
+ {q:"What is a metaphor?",o:["A comparison without 'like' or 'as'","A measurement","A question","A repeated sound"],a:0,w:"A metaphor describes one thing as another for effect."}
+ ]};
+function startQuiz(){quizList=[...quizzes[$("quizSubject").value]].sort(()=>Math.random()-.5);quizIndex=0;drawQuestion()}
+function drawQuestion(){
+ $("quizFeedback").textContent="";
+ if(quizIndex>=quizList.length){$("quizArea").textContent="Quiz complete. Review your mistakes and try again.";$("quizScore").textContent=`Attempts: ${state.quizzes} · Correct: ${state.correct}`;return}
+ answered=false;const q=quizList[quizIndex];
+ $("quizArea").innerHTML="<h3>"+`Question ${quizIndex+1} of ${quizList.length}`+"</h3><p>"+esc(q.q)+"</p>";
+ q.o.forEach((o,i)=>{const b=document.createElement("button");b.className="quiz-option";b.textContent=o;b.onclick=()=>answer(i);$("quizArea").appendChild(b)})
+}
+function answer(i){
+ if(answered)return;answered=true;state.quizzes++;
+ const q=quizList[quizIndex],correct=i===q.a;
+ if(correct){state.correct++;$("quizFeedback").textContent="YOU..... YOU GOT IT RIGHT. "+q.w;$("quizFeedback").style.color="var(--gold)"}
+ else{$("quizFeedback").textContent="Not quite. "+q.w;$("quizFeedback").style.color="#ff657a"}
+ save();const b=document.createElement("button");b.className="primary";b.style.marginTop="12px";b.textContent=quizIndex===quizList.length-1?"Finish quiz":"Next question →";b.onclick=()=>{quizIndex++;drawQuestion()};$("quizArea").appendChild(b)
+}
+$("newQuiz").onclick=startQuiz;
+
+async function startScreen(){
+ if(!navigator.mediaDevices?.getDisplayMedia){$("screenStatus").textContent="Screen sharing isn't supported in this browser.";return}
+ try{
+ stream=await navigator.mediaDevices.getDisplayMedia({video:true,audio:false});
+ $("screenVideo").srcObject=stream;$("screenVideo").style.display="block";
+ $("screenStatus").textContent="Screen preview active. This demo does not send or analyse your screen.";
+ stream.getVideoTracks()[0].addEventListener("ended",stopScreen);
+ }catch(e){$("screenStatus").textContent="Screen sharing cancelled or blocked. You remain in control."}
+}
+function stopScreen(){if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;$("screenVideo").srcObject=null;$("screenVideo").style.display="none";$("screenStatus").textContent="Screen sharing is off."}
+$("startScreen").onclick=startScreen;$("stopScreen").onclick=stopScreen;
+
+function renderHistory(){
+ if(!$("historyList"))return;
+ if(!state.messages.length){$("historyList").innerHTML='<p class="muted">No saved messages yet.</p>';return}
+ $("historyList").innerHTML=state.messages.slice().reverse().map(m=>'<div class="history-item"><span style="color:var(--gold)">'+(m.role==="user"?"YOU":"VERITY")+"</span><br>"+esc(m.text)+"<br><small class=\"muted\">"+esc(new Date(m.time).toLocaleString())+"</small></div>").join("");
+}
+$("exportHistory").onclick=()=>{
+ const url=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:"application/json"}));
+ const a=document.createElement("a");a.href=url;a.download="verity-history.json";a.click();URL.revokeObjectURL(url)
+};
+$("deleteHistory").onclick=()=>{
+ if(!confirm("Delete all saved messages and statistics from this browser?"))return;
+ state={...defaultState,messages:[]};save();$("chatMessages").innerHTML="";
+ addMessage("verity","History cleared. A clean slate.");
+};
+
+if(state.messages.length){state.messages.forEach(m=>{
+ const el=document.createElement("div");el.className="message "+m.role;
+ el.innerHTML='<div class="who">'+(m.role==="user"?"YOU":"VERITY")+"</div>"+esc(m.text);$("chatMessages").appendChild(el)
+})}else addMessage("verity","You're here. Excellent. Let's improve your brain without damaging your confidence.");
+stats();renderHistory();
+
+let lastActivity=Date.now();
+["mousemove","keydown","click","touchstart"].forEach(e=>document.addEventListener(e,()=>lastActivity=Date.now(),{passive:true}));
+document.addEventListener("visibilitychange",()=>{
+ if(!document.hidden&&Date.now()-lastActivity>45000&&$("chat").classList.contains("active")){
+ const lines=["Back already? I was enjoying the silence.","Leaving so soon? Where is my goodbye?","I assume that trip away was productive."];
+ addMessage("verity",lines[Math.floor(Math.random()*lines.length)])
+ }
+});
+</script>
+</body>
+</html>
