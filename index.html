@@ -1,275 +1,63 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>StudyMind AI 2.0 — Verity</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#09090f">
+<title>StudyMind AI 2.0 — Verity Edition</title>
 <style>
-:root{--bg:#08080d;--panel:#12121d;--gold:#e9c45a;--purple:#a47aff;--text:#f5f2ff;--muted:#aaa4bb;--border:#302a42}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:15px Arial,sans-serif}
-button,input,textarea,select{font:inherit}
-button{cursor:pointer}
-.app{display:grid;grid-template-columns:225px 1fr;min-height:100vh}
-aside{padding:20px 12px;background:#0d0c14;border-right:1px solid var(--border)}
-.logo{padding:10px;color:var(--gold);font-weight:bold;font-size:20px}
-.logo small{display:block;color:var(--purple);font-size:10px;letter-spacing:3px;margin-top:8px}
-.nav{display:block;width:100%;padding:13px;text-align:left;background:transparent;color:var(--muted);border:1px solid transparent;border-radius:9px;margin:5px 0}
-.nav:hover,.nav.active{background:#1a1725;color:var(--gold);border-color:var(--border)}
-.note{font-size:12px;color:var(--muted);margin-top:40px;line-height:1.7}
-main{padding:24px;max-width:1200px;width:100%;margin:auto;min-width:0}
-header{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--border);padding-bottom:18px;margin-bottom:22px}
-h1{font-size:clamp(23px,4vw,32px);margin:7px 0}
-h2,h3{margin-top:0}
-.status{font-size:11px;color:var(--gold);letter-spacing:1px}
-.page{display:none}.page.active{display:block}
-.card{padding:20px;background:var(--panel);border:1px solid var(--border);border-radius:14px;margin-bottom:15px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px}
-.muted{color:var(--muted);line-height:1.6}
-.big{font-size:30px;color:var(--gold);font-weight:bold}
-button.primary{background:var(--gold);color:#17120a;border:0;border-radius:8px;padding:11px 15px;font-weight:bold}
-button.secondary{background:#1b1926;color:var(--text);border:1px solid var(--border);border-radius:8px;padding:11px 15px}
-button:disabled{opacity:.5}
-textarea,input,select{width:100%;padding:12px;color:var(--text);background:#090910;border:1px solid var(--border);border-radius:8px}
-textarea{min-height:100px;resize:vertical}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.chat{height:350px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;margin-bottom:14px}
-.message{padding:13px 15px;border-radius:12px;max-width:92%;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55}
-.message.user{align-self:flex-end;background:#2a2440}
-.message.verity{align-self:flex-start;background:#1b1725;border:1px solid #47315f}
-.who{font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:6px}
-.quiz-option{display:block;width:100%;padding:13px;text-align:left;background:#1b1926;color:var(--text);border:1px solid var(--border);border-radius:8px;margin:8px 0}
-.quiz-option:hover{border-color:var(--gold)}
-.history-item{padding:12px 0;border-bottom:1px solid var(--border);overflow-wrap:anywhere}
-footer{font-size:11px;color:var(--muted);padding:20px 0}
-@media(max-width:700px){.app{grid-template-columns:1fr}aside{display:flex;gap:4px;overflow-x:auto;position:sticky;top:0;z-index:5;padding:8px}.logo,.note{display:none}.nav{white-space:nowrap;width:auto;margin:0;padding:10px}main{padding:14px}header{align-items:flex-start;flex-direction:column}}
-</style>
-</head>
-<body>
-<div class="app">
-<aside>
-<div class="logo">STUDYMIND AI<small>VERITY EDITION · 2.0</small></div>
-<button class="nav active" data-page="overview">◈ Overview</button>
-<button class="nav" data-page="chat">◉ Verity Chat</button>
-<button class="nav" data-page="study">▤ Study Studio</button>
-<button class="nav" data-page="quiz">◆ Quick Quiz</button>
-<button class="nav" data-page="screen">▣ Screen Access</button>
-<button class="nav" data-page="history">◷ History</button>
-<div class="note">VERITY SYSTEM<br>FREE LOCAL MODE<br><span style="color:var(--purple)">Observing the obvious.</span></div>
-</aside>
-
-<main>
-<header>
-<div><div class="status">● SYSTEM ONLINE · LOCAL MODE</div><h1 id="pageTitle">Welcome back.</h1></div>
-<button class="secondary" id="clearChat">Clear chat</button>
-</header>
-
-<section class="page active" id="overview">
-<div class="card">
-<p style="color:var(--purple)">YOUR PERSONAL STUDY INTELLIGENCE</p>
-<h2>“I hope you brought your brain.”</h2>
-<p class="muted">Study, investigate problems, challenge your answers and catch careless mistakes.</p>
-<button class="primary" data-go="chat">Talk to Verity →</button>
-</div>
-<div class="grid">
-<div class="card"><div class="muted">Questions asked</div><div class="big" id="statQuestions">0</div></div>
-<div class="card"><div class="muted">Quiz attempts</div><div class="big" id="statQuizzes">0</div></div>
-<div class="card"><div class="muted">Correct answers</div><div class="big" id="statCorrect">0</div></div>
-</div>
-<div class="card"><h3>System notice</h3><p class="muted">This free version runs in your browser. Real AI answers require connecting an AI service. Screen sharing below is permission-based and does not automatically analyse your screen.</p></div>
-</section>
-
-<section class="page" id="chat">
-<div class="card">
-<div class="chat" id="chatMessages" aria-live="polite"></div>
-<textarea id="chatInput" placeholder="Ask Verity anything... (Ctrl + Enter to send)"></textarea>
-<div class="actions"><button class="primary" id="sendBtn">Send ↗</button><button class="secondary" id="clearInput">Clear input</button></div>
-<p class="muted">Local demo mode — no paid API or subscription needed for these features.</p>
-</div>
-</section>
-
-<section class="page" id="study">
-<div class="card">
-<h2>Study Studio</h2><p class="muted">Make a study plan, revision template or practice set.</p>
-<label>Subject</label><input id="subject" placeholder="e.g. Mathematics">
-<br><br><label>Topic and level</label><textarea id="topic" placeholder="e.g. Secondary 1 fractions and ratios"></textarea>
-<div class="actions"><button class="primary" data-study="plan">Study plan</button><button class="secondary" data-study="notes">Revision notes</button><button class="secondary" data-study="questions">Practice set</button></div>
-<hr><div id="studyOutput" class="muted">Your study material will appear here.</div>
-</div>
-</section>
-
-<section class="page" id="quiz">
-<div class="card">
-<h2>Quick Quiz</h2><label>Subject</label>
-<select id="quizSubject"><option value="math">Mathematics</option><option value="science">Science</option><option value="english">English</option></select>
-<br><br><button class="primary" id="newQuiz">Start quiz</button><hr>
-<div id="quizArea">Choose a subject and start.</div><p id="quizFeedback"></p><div class="muted" id="quizScore"></div>
-</div>
-</section>
-
-<section class="page" id="screen">
-<div class="card">
-<h2>Screen Access</h2>
-<p class="muted">You decide when to share your screen. This page can preview it locally but cannot automatically understand the image.</p>
-<div class="actions"><button class="primary" id="startScreen">Share screen</button><button class="secondary" id="stopScreen">Stop sharing</button></div>
-<video id="screenVideo" autoplay muted playsinline style="display:none;width:100%;margin-top:16px;border-radius:10px"></video>
-<p id="screenStatus" class="muted">Screen sharing is off.</p>
-</div>
-</section>
-
-<section class="page" id="history">
-<div class="card"><h2>Conversation History</h2><p class="muted">Saved in this browser only.</p>
-<div class="actions"><button class="secondary" id="exportHistory">Export history</button><button class="secondary" id="deleteHistory">Delete history</button></div>
-<div id="historyList"></div>
-</div>
-</section>
-<footer>STUDYMIND AI · VERITY EDITION · FREE BROWSER VERSION</footer>
-</main>
-</div>
-
+:root{--bg:#08090e;--panel:#11121b;--panel2:#171827;--line:#29283b;--gold:#f4c95d;--purple:#a78bfa;--text:#f4f4fb;--muted:#a4a4b8;--red:#ff687b;--green:#64e6b0}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top right,#24163a 0,transparent 38%),var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);border-radius:12px;padding:10px 14px;background:#202033;color:var(--text);transition:.15s}button:hover{border-color:var(--gold);transform:translateY(-1px)}button.primary{background:linear-gradient(135deg,var(--gold),#f39d48);color:#17121a;border:0;font-weight:800}button.ghost{background:transparent}button.danger{color:#ff9aa7}input,textarea,select{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;background:#0c0d15;color:var(--text);outline:none}input:focus,textarea:focus,select:focus{border-color:var(--purple)}textarea{resize:vertical;min-height:94px}.app{display:grid;grid-template-columns:235px 1fr;min-height:100vh}.sidebar{padding:22px 15px;border-right:1px solid var(--line);background:#090a10eF;position:sticky;top:0;height:100vh}.brand{display:flex;gap:11px;align-items:center;padding:4px 8px 24px}.logo{display:grid;place-items:center;width:43px;height:43px;border-radius:14px;background:linear-gradient(135deg,var(--gold),var(--purple));color:#17121a;font-weight:1000;font-size:20px}.brand b{display:block;letter-spacing:.3px}.brand small{color:var(--muted)}.nav{display:grid;gap:7px}.nav button{background:transparent;border-color:transparent;text-align:left;color:var(--muted)}.nav button.active{background:linear-gradient(90deg,#302544,#191724);border-color:#49385d;color:white}.sidefoot{position:absolute;bottom:20px;left:20px;right:20px;color:var(--muted);font-size:12px}.main{min-width:0;padding:24px clamp(14px,3vw,38px) 50px;max-width:1500px;width:100%;margin:auto}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:26px}.eyebrow{font-size:11px;color:var(--gold);font-weight:900;letter-spacing:2px;text-transform:uppercase}h1{font-size:clamp(25px,4vw,36px);line-height:1.15;margin:5px 0 8px}h2{font-size:21px;margin:0 0 8px}h3{font-size:16px;margin:0 0 8px}.muted{color:var(--muted)}.pill{font-size:12px;border:1px solid var(--line);border-radius:99px;padding:7px 10px;color:var(--muted)}.grid{display:grid;gap:16px}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.card{background:linear-gradient(145deg,#151622,#10111a);border:1px solid var(--line);border-radius:19px;padding:19px;min-width:0}.hero{padding:clamp(22px,4vw,36px);background:linear-gradient(115deg,#211b32,#11121d 58%,#302216);border-color:#40344e;position:relative;overflow:hidden}.hero:after{content:'✦';position:absolute;right:8%;top:4%;font-size:100px;color:#f4c95d10}.hero p{max-width:650px;color:#c5c2d4}.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:17px}.stat{font-size:29px;font-weight:850;margin-top:4px}.statlabel{font-size:12px;color:var(--muted)}.section{display:none}.section.active{display:block;animation:fade .18s ease}@keyframes fade{from{opacity:.6;transform:translateY(3px)}to{opacity:1;transform:none}}.sectionhead{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:0 0 17px}.chatbox{display:flex;flex-direction:column;height:min(67vh,720px);min-height:420px}.messages{flex:1;overflow:auto;padding:4px 3px 15px;display:flex;flex-direction:column;gap:13px}.msg{max-width:88%;border-radius:15px;padding:12px 15px;white-space:pre-wrap;overflow-wrap:anywhere}.msg.user{align-self:flex-end;background:#302448;border:1px solid #4e3a69}.msg.verity{align-self:flex-start;background:#191a27;border:1px solid #2c2d40}.msg .who{display:block;font-size:10px;font-weight:900;letter-spacing:1px;color:var(--gold);margin-bottom:4px}.chatform{display:flex;gap:9px;align-items:end;border-top:1px solid var(--line);padding-top:13px}.chatform textarea{min-height:46px;max-height:140px}.chatform button{height:46px}.row{display:flex;gap:10px;align-items:center}.row>*{min-width:0}.spread{justify-content:space-between}.toolbtn{width:100%;text-align:left;min-height:96px}.toolbtn strong{display:block;margin-bottom:5px}.label{font-size:12px;color:var(--muted);display:block;margin:12px 0 6px}.result{white-space:pre-wrap;overflow-wrap:anywhere;background:#0b0c14;border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:13px;min-height:60px}.status{font-size:12px;margin-top:9px;color:var(--muted)}.status.good{color:var(--green)}.status.bad{color:var(--red)}.historyitem{padding:12px 0;border-bottom:1px solid var(--line)}.historyitem:last-child{border:0}.historyitem p{white-space:pre-wrap;overflow-wrap:anywhere;margin:5px 0;color:var(--muted)}.quizoption{display:block;width:100%;text-align:left;margin-top:8px}.quizoption.correct{border-color:var(--green);color:var(--green)}.quizoption.wrong{border-color:var(--red);color:var(--red)}.mobilebar{display:none}.tiny{font-size:12px}.footer{margin-top:25px;color:#737387;font-size:12px}.screenpreview{width:100%;max-height:310px;object-fit:contain;background:#090a10;border:1px solid var(--line);border-radius:12px;margin-top:12px}.hidden{display:none!important}@media(max-width:850px){.app{display:block}.sidebar{position:sticky;z-index:5;top:0;height:auto;padding:10px 12px;border-right:0;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.brand{padding:0}.logo{width:37px;height:37px}.nav{display:flex;overflow-x:auto;gap:5px;max-width:66vw}.nav button{white-space:nowrap;padding:9px 11px;font-size:12px}.sidefoot{display:none}.main{padding:19px 13px 40px}.grid.two,.grid.three{grid-template-columns:1fr}.topbar{margin-bottom:18px}.chatbox{height:65vh;min-height:380px}.msg{max-width:96%}.sectionhead{align-items:start;flex-direction:column}}@media(min-width:851px) and (max-width:1100px){.grid.three{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style></head><body>
+<div class="app"><aside class="sidebar"><div class="brand"><div class="logo">V</div><div><b>StudyMind AI</b><small>VERITY EDITION · 2.0</small></div></div><nav class="nav" id="nav"><button class="active" data-tab="overview">◈ Overview</button><button data-tab="chat">✦ Verity Chat</button><button data-tab="studio">▣ Study Studio</button><button data-tab="quiz">◎ Quick Quiz</button><button data-tab="screen">▧ Screen Access</button><button data-tab="history">◷ History</button><button data-tab="settings">⚙ Settings</button></nav><div class="sidefoot">Black • Gold • Purple<br>Think clearly. Learn boldly.</div></aside>
+<main class="main"><div class="topbar"><div><div class="eyebrow">Your personal study intelligence</div><div class="muted tiny">A sharper way to learn.</div></div><span class="pill" id="connectionPill">Offline mode · ready</span></div>
+<section class="section active" id="overview"><div class="card hero"><div class="eyebrow">Meet your study partner</div><h1>Think smarter with <span style="color:var(--gold)">Verity.</span></h1><p>Your curious, quick-witted AI study partner. Ask questions, turn notes into revision material, generate quizzes, and choose when to share a screenshot for help.</p><div class="actions"><button class="primary" data-go="chat">Talk to Verity ↗</button><button data-go="studio">Open Study Studio</button><button class="ghost" data-go="settings">Connect AI</button></div></div><div class="grid three" style="margin-top:16px"><div class="card"><div class="stat">✦</div><div class="statlabel">Offline study assistant</div><h3>Ask anything</h3><p class="muted tiny">Get explanations, examples and step-by-step help.</p></div><div class="card"><div class="stat">▣</div><div class="statlabel">Revision tools</div><h3>Study smarter</h3><p class="muted tiny">Summaries, flashcards and practice questions.</p></div><div class="card"><div class="stat">◎</div><div class="statlabel">Active recall</div><h3>Test yourself</h3><p class="muted tiny">Generate a quiz and check your answers.</p></div></div><div class="card" style="margin-top:16px"><h2>Quick launch</h2><div class="grid three" style="margin-top:12px"><button class="toolbtn" data-go="chat"><strong>✦ Explain a topic</strong><span class="muted tiny">Make a confusing topic simple.</span></button><button class="toolbtn" data-go="studio"><strong>▤ Create revision notes</strong><span class="muted tiny">Turn your notes into a summary.</span></button><button class="toolbtn" data-go="quiz"><strong>◎ Start a quiz</strong><span class="muted tiny">Practice before the test.</span></button></div></div></section>
+<section class="section" id="chat"><div class="sectionhead"><div><div class="eyebrow">Live conversation</div><h1>Verity Chat</h1><div class="muted">Clever answers. Clear explanations. A little personality.</div></div><button class="ghost" id="clearChat">Clear chat</button></div><div class="card chatbox"><div class="messages" id="messages"><div class="msg verity"><span class="who">VERITY</span>Well, well. A new case to solve. 🕵️ What are we learning today? Ask me anything, and we’ll crack it together.</div></div><form class="chatform" id="chatForm"><textarea id="chatInput" placeholder="Ask Verity something… (Enter to send)" required></textarea><button class="primary" id="sendBtn">Send ↗</button></form><div class="status" id="chatStatus">Offline mode is ready. Chat and study tools work locally; no messages are sent anywhere.</div></div></section>
+<section class="section" id="studio"><div class="sectionhead"><div><div class="eyebrow">Revision workspace</div><h1>Study Studio</h1><div class="muted">Choose a tool, add your topic or notes, and let Verity help.</div></div></div><div class="grid two"><div class="card"><h2>🧠 Smart summary</h2><p class="muted tiny">Turn long notes into clear revision points.</p><label class="label" for="summaryInput">Topic or notes</label><textarea id="summaryInput" placeholder="Paste your science, maths, history or other notes…"></textarea><button class="primary" style="margin-top:10px" id="summaryBtn">Create summary</button><div class="result hidden" id="summaryResult"></div></div><div class="card"><h2>▤ Flashcard maker</h2><p class="muted tiny">Create question-and-answer cards for active recall.</p><label class="label" for="flashInput">Topic or notes</label><textarea id="flashInput" placeholder="Paste notes or enter a topic…"></textarea><button class="primary" style="margin-top:10px" id="flashBtn">Make flashcards</button><div class="result hidden" id="flashResult"></div></div><div class="card"><h2>✍️ Writing helper</h2><p class="muted tiny">Plan an essay, improve clarity or check grammar.</p><label class="label" for="writeInput">Your writing or assignment</label><textarea id="writeInput" placeholder="Paste your draft or describe your task…"></textarea><button class="primary" style="margin-top:10px" id="writeBtn">Help me improve</button><div class="result hidden" id="writeResult"></div></div><div class="card"><h2>🧩 Explain it simply</h2><p class="muted tiny">Ask for a beginner-friendly explanation with examples.</p><label class="label" for="explainInput">What are you stuck on?</label><textarea id="explainInput" placeholder="e.g. How do ratios work? Why does current split in parallel circuits?"></textarea><button class="primary" style="margin-top:10px" id="explainBtn">Explain this</button><div class="result hidden" id="explainResult"></div></div></div></section>
+<section class="section" id="quiz"><div class="sectionhead"><div><div class="eyebrow">Active recall</div><h1>Quick Quiz</h1><div class="muted">Create a practice quiz on a topic of your choice.</div></div></div><div class="card"><div class="grid two"><div><label class="label" for="quizTopic">Topic</label><input id="quizTopic" placeholder="e.g. Sec 1 ratios, cells, forces"/></div><div><label class="label" for="quizLevel">Difficulty</label><select id="quizLevel"><option>Easy</option><option selected>Medium</option><option>Hard</option></select></div></div><div class="row" style="margin-top:12px;flex-wrap:wrap"><button class="primary" id="makeQuiz">Generate 5 questions</button><span class="muted tiny" id="quizScore">Score: 0 / 0</span></div><div id="quizArea" style="margin-top:16px"></div><div class="status" id="quizStatus">Offline quiz mode: works in your browser using built-in topics or notes you provide.</div></div></section>
+<section class="section" id="screen"><div class="sectionhead"><div><div class="eyebrow">User-controlled sharing</div><h1>Screen Access</h1><div class="muted">Verity cannot watch your screen continuously. You choose exactly what to share.</div></div></div><div class="grid two"><div class="card"><h2>▧ Choose a screenshot</h2><p class="muted tiny">Upload an image of a question, worksheet or screen. Nothing is sent until you press Analyze image.</p><label class="label" for="imageFile">Image file</label><input type="file" id="imageFile" accept="image/png,image/jpeg,image/webp"><img id="imagePreview" class="screenpreview hidden" alt="Screenshot preview"><label class="label" for="imageQuestion">What should Verity look at?</label><textarea id="imageQuestion" placeholder="e.g. Explain question 4 and show the steps.">Explain what is shown and help me with it.</textarea><button class="primary" id="analyzeImage" style="margin-top:12px">Analyze image</button><div class="status" id="imageStatus">Your image stays in this page until you choose Analyze image.</div></div><div class="card"><h2>Privacy by design</h2><p>✓ No automatic screenshot uploads.</p><p>✓ No background screen monitoring.</p><p>✓ You must select an image and click Analyze.</p><p>✓ Offline mode needs no API key and sends no data. If you connect a backend later, its privacy depends on that service.</p><div class="result" id="imageResult">Image analysis results will appear here.</div></div></div></section>
+<section class="section" id="history"><div class="sectionhead"><div><div class="eyebrow">Your workspace</div><h1>History</h1><div class="muted">Recent conversations and study tool results saved in this browser.</div></div><button class="danger" id="clearHistory">Delete history</button></div><div class="card" id="historyList"><p class="muted">Nothing saved yet.</p></div><p class="muted tiny">History is stored locally in this browser. Clearing browser data may remove it.</p></section>
+<section class="section" id="settings"><div class="sectionhead"><div><div class="eyebrow">Configuration</div><h1>Settings</h1><div class="muted">Offline mode works without a key. An optional backend can be added later if approved.</div></div></div><div class="grid two"><div class="card"><h2>AI backend connection</h2><p class="muted tiny">Paste the public URL of your running Replit backend. Do not paste your API key here.</p><label class="label" for="backendUrl">Backend URL</label><input id="backendUrl" placeholder="https://your-project.your-user.replit.app"><div class="actions"><button class="primary" id="saveBackend">Save URL</button><button id="testBackend">Test connection</button></div><div class="status" id="backendStatus">Not tested yet.</div></div><div class="card"><h2>Verity’s personality</h2><p>Curious, sharp, encouraging, witty, and honest. Verity should explain the reasoning, not just dump answers.</p><h3 style="margin-top:18px">Model status</h3><p class="muted tiny" id="modelStatus">Not connected</p><h3 style="margin-top:18px">Safety note</h3><p class="muted tiny">Offline mode needs no API key. If an approved backend is connected later, keep its API key in server-side Secrets only.</p></div></div></section>
+<div class="footer">StudyMind AI 2.0 · Verity Edition · AI can make mistakes. Check important answers against your class notes.</div></main></div>
 <script>
-"use strict";
-const $=id=>document.getElementById(id);
-const defaultState={messages:[],questions:0,quizzes:0,correct:0};
-let state;
-try{state={...defaultState,...JSON.parse(localStorage.getItem("verityState")||"{}")}}
-catch(e){state={...defaultState}}
-let stream=null,quizList=[],quizIndex=0,answered=false;
-
-const titles={overview:"Welcome back.",chat:"Verity Chat",study:"Study Studio",quiz:"Quick Quiz",screen:"Screen Access",history:"History"};
-function save(){try{localStorage.setItem("verityState",JSON.stringify(state))}catch(e){}stats();renderHistory()}
-function stats(){$("statQuestions").textContent=state.questions;$("statQuizzes").textContent=state.quizzes;$("statCorrect").textContent=state.correct}
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function page(name){
- document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id===name));
- document.querySelectorAll(".nav").forEach(x=>x.classList.toggle("active",x.dataset.page===name));
- $("pageTitle").textContent=titles[name]||"Verity";
- if(name==="history")renderHistory();
-}
-document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>page(b.dataset.page));
-document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>page(b.dataset.go));
-
-function addMessage(role,text,store=true){
- const m={role,text:String(text),time:new Date().toISOString()};
- const el=document.createElement("div");el.className="message "+role;
- el.innerHTML='<div class="who">'+(role==="user"?"YOU":"VERITY")+'</div>'+esc(m.text);
- $("chatMessages").appendChild(el);$("chatMessages").scrollTop=$("chatMessages").scrollHeight;
- if(store){state.messages.push(m);save()}
-}
-function reply(text){
- const s=text.toLowerCase().trim();
- if(!s)return "You sent absolutely nothing. A bold intellectual strategy.";
- if(/\b(hi|hello|hey)\b/.test(s))return "Oh, good. A human has arrived. What are we solving today?";
- if(s.includes("who are you"))return "I'm Verity. Your study companion and professional spotter of avoidable mistakes.";
- if(s.includes("what is 1+1")||s.includes("what is 1 + 1"))return "Two. I resisted the urge to make that more dramatic.";
- if(s.includes("thank"))return "You're welcome. Try not to look so surprised.";
- if(s.includes("bye"))return "Leaving so soon? Where is my goodbye?";
- if(s.includes("help"))return "Give me the subject, the topic and what is confusing you. I'm clever, not telepathic.";
- if(s.includes("study"))return "Pick one topic. Review the key idea. Solve questions without notes. Check every mistake. Which subject?";
- if(s.endsWith("?"))return "Interesting question. This browser version doesn't have a real AI model connected yet, so I can't reliably answer everything. Connect an AI backend for real AI answers.";
- return "Noted. Give me more context so we can investigate properly. I'm currently running in local demo mode.";
-}
-async function send(){
- const text=$("chatInput").value.trim();if(!text)return;
- $("chatInput").value="";addMessage("user",text);state.questions++;save();
- $("sendBtn").disabled=true;$("sendBtn").textContent="Thinking...";
- await new Promise(r=>setTimeout(r,350));
- addMessage("verity",reply(text));
- $("sendBtn").disabled=false;$("sendBtn").textContent="Send ↗";
-}
-$("sendBtn").onclick=send;
-$("chatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)){e.preventDefault();send()}});
-$("clearInput").onclick=()=>$("chatInput").value="";
-$("clearChat").onclick=()=>{
- $("chatMessages").innerHTML="";state.messages=[];save();
- addMessage("verity","A fresh conversation. Try to make this one interesting.");
-};
-
-const studyTemplates={
- plan:(s,t)=>`STUDY PLAN — ${s}\nTopic: ${t}\n\n1. Spend 5 minutes writing what you already know.\n2. Review the key rules and definitions for 10 minutes.\n3. Work through two examples.\n4. Try five questions without notes.\n5. Mark your work and explain each mistake.\n6. Test yourself again tomorrow.\n\nVerity's advice: Reading a page repeatedly isn't the same as learning it.`,
- notes:(s,t)=>`REVISION TEMPLATE — ${s}\nTopic: ${t}\n\nKEY IDEA:\nWrite the main concept in one sentence.\n\nIMPORTANT FACTS:\n• Definition:\n• Rule or formula:\n• Example:\n• Common mistake:\n\nSELF-TEST:\nCan you explain the idea without looking at your notes?\n\nThis is a template, not verified topic-specific facts.`,
- questions:(s,t)=>`PRACTICE SET — ${s}\nTopic: ${t}\n\n1. Define the main idea.\n2. Give an example.\n3. Solve a typical question.\n4. Explain why a common wrong answer is incorrect.\n5. Create a harder question and solve it.\n\nThis offline version provides a practice structure, not custom AI-generated questions.`
-};
-document.querySelectorAll("[data-study]").forEach(b=>b.onclick=()=>{
- const s=$("subject").value.trim()||"Your subject",t=$("topic").value.trim()||"your chosen topic";
- $("studyOutput").textContent=studyTemplates[b.dataset.study](s,t);
-});
-
-const quizzes={
- math:[
- {q:"What is 3/4 as a percentage?",o:["25%","50%","75%","80%"],a:2,w:"3 ÷ 4 = 0.75 = 75%."},
- {q:"Solve 5x = 35.",o:["5","6","7","8"],a:2,w:"Divide both sides by 5: x = 7."},
- {q:"Area of a rectangle 8 cm by 3 cm?",o:["11 cm²","22 cm²","24 cm²","48 cm²"],a:2,w:"Area = length × width = 24 cm²."}
- ],
- science:[
- {q:"Which organ pumps blood?",o:["Lungs","Heart","Liver","Kidneys"],a:1,w:"The heart pumps blood through the circulatory system."},
- {q:"Which process lets green plants make food using light?",o:["Digestion","Respiration","Photosynthesis","Evaporation"],a:2,w:"Photosynthesis uses light energy to make glucose."},
- {q:"What is the SI unit of force?",o:["Joule","Watt","Newton","Pascal"],a:2,w:"Force is measured in newtons (N)."}
- ],
- english:[
- {q:"Choose the correct sentence.",o:["She go to school.","She goes to school.","She going school.","She gone to school."],a:1,w:"Use 'goes' with 'she' in the simple present."},
- {q:"Closest meaning to 'reluctant'?",o:["Eager","Unwilling","Certain","Cheerful"],a:1,w:"Reluctant means unwilling or hesitant."},
- {q:"What is a metaphor?",o:["A comparison without 'like' or 'as'","A measurement","A question","A repeated sound"],a:0,w:"A metaphor describes one thing as another for effect."}
- ]};
-function startQuiz(){quizList=[...quizzes[$("quizSubject").value]].sort(()=>Math.random()-.5);quizIndex=0;drawQuestion()}
-function drawQuestion(){
- $("quizFeedback").textContent="";
- if(quizIndex>=quizList.length){$("quizArea").textContent="Quiz complete. Review your mistakes and try again.";$("quizScore").textContent=`Attempts: ${state.quizzes} · Correct: ${state.correct}`;return}
- answered=false;const q=quizList[quizIndex];
- $("quizArea").innerHTML="<h3>"+`Question ${quizIndex+1} of ${quizList.length}`+"</h3><p>"+esc(q.q)+"</p>";
- q.o.forEach((o,i)=>{const b=document.createElement("button");b.className="quiz-option";b.textContent=o;b.onclick=()=>answer(i);$("quizArea").appendChild(b)})
-}
-function answer(i){
- if(answered)return;answered=true;state.quizzes++;
- const q=quizList[quizIndex],correct=i===q.a;
- if(correct){state.correct++;$("quizFeedback").textContent="YOU..... YOU GOT IT RIGHT. "+q.w;$("quizFeedback").style.color="var(--gold)"}
- else{$("quizFeedback").textContent="Not quite. "+q.w;$("quizFeedback").style.color="#ff657a"}
- save();const b=document.createElement("button");b.className="primary";b.style.marginTop="12px";b.textContent=quizIndex===quizList.length-1?"Finish quiz":"Next question →";b.onclick=()=>{quizIndex++;drawQuestion()};$("quizArea").appendChild(b)
-}
-$("newQuiz").onclick=startQuiz;
-
-async function startScreen(){
- if(!navigator.mediaDevices?.getDisplayMedia){$("screenStatus").textContent="Screen sharing isn't supported in this browser.";return}
- try{
- stream=await navigator.mediaDevices.getDisplayMedia({video:true,audio:false});
- $("screenVideo").srcObject=stream;$("screenVideo").style.display="block";
- $("screenStatus").textContent="Screen preview active. This demo does not send or analyse your screen.";
- stream.getVideoTracks()[0].addEventListener("ended",stopScreen);
- }catch(e){$("screenStatus").textContent="Screen sharing cancelled or blocked. You remain in control."}
-}
-function stopScreen(){if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;$("screenVideo").srcObject=null;$("screenVideo").style.display="none";$("screenStatus").textContent="Screen sharing is off."}
-$("startScreen").onclick=startScreen;$("stopScreen").onclick=stopScreen;
-
-function renderHistory(){
- if(!$("historyList"))return;
- if(!state.messages.length){$("historyList").innerHTML='<p class="muted">No saved messages yet.</p>';return}
- $("historyList").innerHTML=state.messages.slice().reverse().map(m=>'<div class="history-item"><span style="color:var(--gold)">'+(m.role==="user"?"YOU":"VERITY")+"</span><br>"+esc(m.text)+"<br><small class=\"muted\">"+esc(new Date(m.time).toLocaleString())+"</small></div>").join("");
-}
-$("exportHistory").onclick=()=>{
- const url=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:"application/json"}));
- const a=document.createElement("a");a.href=url;a.download="verity-history.json";a.click();URL.revokeObjectURL(url)
-};
-$("deleteHistory").onclick=()=>{
- if(!confirm("Delete all saved messages and statistics from this browser?"))return;
- state={...defaultState,messages:[]};save();$("chatMessages").innerHTML="";
- addMessage("verity","History cleared. A clean slate.");
-};
-
-if(state.messages.length){state.messages.forEach(m=>{
- const el=document.createElement("div");el.className="message "+m.role;
- el.innerHTML='<div class="who">'+(m.role==="user"?"YOU":"VERITY")+"</div>"+esc(m.text);$("chatMessages").appendChild(el)
-})}else addMessage("verity","You're here. Excellent. Let's improve your brain without damaging your confidence.");
-stats();renderHistory();
-
-let lastActivity=Date.now();
-["mousemove","keydown","click","touchstart"].forEach(e=>document.addEventListener(e,()=>lastActivity=Date.now(),{passive:true}));
-document.addEventListener("visibilitychange",()=>{
- if(!document.hidden&&Date.now()-lastActivity>45000&&$("chat").classList.contains("active")){
- const lines=["Back already? I was enjoying the silence.","Leaving so soon? Where is my goodbye?","I assume that trip away was productive."];
- addMessage("verity",lines[Math.floor(Math.random()*lines.length)])
- }
-});
-</script>
-</body>
-</html>
+const $=id=>document.getElementById(id);const STORAGE='studymind_verity_v2';const API_KEY='studymind_verity_backend';let chatHistory=[];let quizData=[];let quizAnswered=0;let quizCorrect=0;let selectedImageData='';
+function loadState(){try{const x=JSON.parse(localStorage.getItem(STORAGE)||'{}');chatHistory=Array.isArray(x.history)?x.history:[];if(x.backend)$('backendUrl').value=x.backend;}catch(e){chatHistory=[];}renderHistory();}
+function saveState(){localStorage.setItem(STORAGE,JSON.stringify({history:chatHistory.slice(-120),backend:$('backendUrl').value.trim()}));}
+function backend(){return ($('backendUrl').value.trim()||localStorage.getItem(API_KEY)||'').replace(/\/$/,'');}
+function showTab(id){document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));window.scrollTo({top:0,behavior:'smooth'});if(id==='history')renderHistory();}
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.go)));
+function appendMessage(role,text,save=true){const d=document.createElement('div');d.className='msg '+(role==='user'?'user':'verity');const w=document.createElement('span');w.className='who';w.textContent=role==='user'?'YOU':'VERITY';const t=document.createElement('div');t.textContent=text;d.append(w,t);$('messages').appendChild(d);$('messages').scrollTop=$('messages').scrollHeight;if(save){chatHistory.push({role,text,at:new Date().toISOString()});saveState();}}
+function cleanText(s){return String(s||'').replace(/\s+/g,' ').trim();}
+function sentences(s){return (String(s||'').match(/[^.!?]+[.!?]?/g)||[]).map(x=>x.trim()).filter(x=>x.length>12);}
+function payloadFromPrompt(message){const bits=String(message).split(/\n\n/);return bits.length>1?bits.slice(1).join('\n\n').trim():String(message);}
+function offlineStudyTool(message){const m=String(message);const raw=payloadFromPrompt(m);const lines=raw.split(/\n+/).map(x=>x.trim()).filter(Boolean);const ss=sentences(raw);if(m.startsWith('Create a clear student-friendly revision summary')){const bullets=(ss.length?ss:lines).slice(0,8).map(x=>'• '+x).join('\n');return 'VERITY STUDY SUMMARY\n\nMain points\n'+(bullets||'• Your notes are short. Add more detail or examples to make a useful summary.')+'\n\nKey words to review\n'+(Array.from(new Set((raw.match(/\b[A-Za-z][A-Za-z-]{4,}\b/g)||[]).map(x=>x.toLowerCase()))).slice(0,8).join(' · ')||'Add important terms from your lesson.')+'\n\nQuick recap\nCover the notes and explain the main idea in your own words. Check any fact that is unclear against your textbook.';}
+if(m.startsWith('Create 8 useful flashcards')){const source=(ss.length?ss:lines).slice(0,8);if(!source.length)return 'Paste a few full sentences from your notes and I will turn them into simple recall cards offline.';return 'OFFLINE FLASHCARDS\n\n'+source.map((x,i)=>'CARD '+(i+1)+'\nQ: What is the key idea in this note?\nA: '+x).join('\n\n')+'\n\nTip: hide each answer and say it aloud before checking.';}
+if(m.startsWith('Help improve this school writing')){const draft=raw;const words=draft.split(/\s+/).filter(Boolean).length;const issues=[];if(draft&&!/[.!?]["')\]]?$/.test(draft.trim()))issues.push('Check that the final sentence ends with suitable punctuation.');if(draft&&draft[0]===draft[0].toLowerCase()&&/[a-z]/.test(draft[0]))issues.push('Capitalise the first word and proper nouns.');if(words>35)issues.push('Split long sentences where each sentence contains more than one main idea.');if(!/because|therefore|however|for example/i.test(draft))issues.push('Add a linking phrase such as “because”, “however” or “for example” where it fits.');if(!issues.length)issues.push('Check verb tense, subject–verb agreement, punctuation and whether each paragraph has one clear main idea.');return 'WRITING CHECK (offline)\n\nSuggestions\n'+issues.slice(0,4).map((x,i)=>(i+1)+'. '+x).join('\n')+'\n\nNext step\nRead the draft aloud, then check: Who is this for? Is the order clear? Have you supported each main point with a detail or example?\n\nI have not rewritten your whole draft because offline mode cannot reliably understand your assignment requirements. Paste the task instructions too for a more useful checklist.';}
+if(m.startsWith('Explain this to a secondary-school student')){const topic=raw;const low=topic.toLowerCase();let expl='Start by identifying what the question gives you and what it asks you to find. Write down the important facts, choose the rule or method from your notes, then work through one step at a time. Finally, check whether your answer makes sense.';if(/ratio/.test(low))expl='A ratio compares quantities. Keep the quantities in the same units before simplifying. Example: 8:12 becomes 2:3 because both numbers divide by 4. Common mistake: simplifying one side only.';else if(/fraction/.test(low))expl='A fraction represents part of a whole. For addition or subtraction, use a common denominator first. Example: 1/4 + 1/4 = 2/4 = 1/2. Common mistake: adding the denominators as well.';else if(/percent/.test(low))expl='Percent means “out of 100”. Example: 20% of 50 = 0.20 × 50 = 10. Common mistake: confusing 20% with 20.';else if(/area|perimeter/.test(low))expl='Perimeter is the distance around a shape; area is the space inside it. For a rectangle, perimeter = 2 × (length + width), while area = length × width. Common mistake: mixing square units for area with ordinary units for perimeter.';else if(/cell/.test(low))expl='Cells are the basic units of living things. The nucleus contains genetic information, the cell membrane controls what enters and leaves, and the cytoplasm is where many cell reactions occur. Plant cells also have a cell wall and usually a large vacuole.';else if(/force/.test(low))expl='A force is a push or pull. Forces can change an object’s speed, direction or shape. If forces are balanced, motion does not change; if they are unbalanced, the object accelerates.';else if(/photosynth/.test(low))expl='Photosynthesis is how green plants use light energy to make glucose from carbon dioxide and water, releasing oxygen. Light and chlorophyll are important. Do not confuse photosynthesis (making glucose) with respiration (releasing energy from food).';else if(/electric|circuit|current/.test(low))expl='An electric current flows in a complete circuit. In a series circuit, the same current passes through each component. In a parallel circuit, current splits between branches. A break in a series path stops the whole circuit.';return 'VERITY EXPLAINS\n\nTopic: '+topic+'\n\n'+expl+'\n\nTry it yourself\n1. Explain the idea in one sentence.\n2. Make up a small example.\n3. Check your answer against your lesson notes or textbook.\n\nOffline note: I use built-in study guidance, not a live AI model, so verify subject-specific facts.';}
+return offlineReply(m);}
+function offlineReply(message){const m=String(message||'').trim();const low=m.toLowerCase();if(!m)return 'Give me a question or paste some notes, and we will work through them.';if(/^(hi|hello|hey|yo|good morning|good afternoon|good evening)[!. ]*$/i.test(m))return 'Well, well. The case begins. 🕵️ I’m Verity in offline mode: no API key, no uploads. What topic are we investigating today?';if(/who are you|what are you|your name/.test(low))return 'I’m Verity, your StudyMind study partner: curious, direct, and mildly dramatic about solving problems. I’m running in offline mode, so I can use built-in study helpers but I’m not a live AI model.';if(/offline|internet|api|real ai|ai brain/.test(low))return 'Right now I’m running locally in your browser. Your chat stays on this device, and no API key is needed. I can help organise notes, give some built-in explanations, make flashcards and run supported quizzes. I cannot know everything or reliably answer every new question like a connected AI model.';if(/ratio/.test(low))return 'A ratio compares quantities. Example: 6:9 simplifies to 2:3 because both parts divide by 3. Keep units the same before comparing. Want to practise? Try simplifying 12:18.';if(/fraction/.test(low))return 'Fractions represent parts of a whole. For addition or subtraction, make the denominators the same first. Example: 1/3 + 1/6 = 2/6 + 1/6 = 3/6 = 1/2. Do not add the denominators.';if(/percent/.test(low))return 'Percent means “out of 100”. To find 15% of 80, calculate 0.15 × 80 = 12. For a percentage increase, find the increase first, then compare it with the original amount.';if(/photosynthesis/.test(low))return 'Photosynthesis lets green plants use light energy to make glucose from carbon dioxide and water, releasing oxygen. Remember: plants use the glucose for energy and growth. Check the exact word equation and conditions in your notes.';if(/cell|nucleus|cytoplasm/.test(low))return 'Quick biology recap: the nucleus contains genetic information, the cell membrane controls what enters and leaves, and the cytoplasm is where many chemical reactions happen. Plant cells also have a cell wall and a large vacuole.';if(/force|newton|motion/.test(low))return 'A force is a push or pull. Balanced forces do not change an object’s motion; unbalanced forces cause acceleration. Forces can change speed, direction or shape.';if(/study plan|revise|revision|exam/.test(low))return 'Case plan: 1) Pick one small topic. 2) Review notes for 10 minutes. 3) Close them and recall key points for 5 minutes. 4) Do 3–5 practice questions. 5) Mark mistakes and revisit only the weak parts. Short focused rounds beat simply rereading.';if(/help|what can you do|commands/.test(low))return 'My offline toolkit can: make summaries from pasted notes, create basic flashcards, check writing with a checklist, explain several common Sec 1 topics, and quiz you on supported topics. Ask a specific question or open Study Studio. For an unfamiliar topic, paste your notes so I can organise them.';const nums=m.match(/-?\d+(?:\.\d+)?/g);if(nums&&/\+|\bplus\b|add|sum of/i.test(low)){const v=nums.map(Number);if(v.length===2)return 'Let’s calculate carefully: '+v[0]+' + '+v[1]+' = '+(v[0]+v[1])+'.';}if(nums&&(/\*|×|multiply|times/i.test(low))){const v=nums.map(Number);if(v.length===2)return 'Let’s calculate carefully: '+v[0]+' × '+v[1]+' = '+(v[0]*v[1])+'.';}if(nums&&(/\-|minus|subtract/i.test(low))){const v=nums.map(Number);if(v.length===2)return 'Let’s calculate carefully: '+v[0]+' − '+v[1]+' = '+(v[0]-v[1])+'.';}return 'Good question. Let’s solve it like a case: 🕵️\n\n1. What do we know?\n2. What exactly are we trying to find?\n3. Which rule, formula or example from your notes fits?\n4. Work through one step at a time, then check the result.\n\nI’m currently offline, so I don’t have a live AI model to answer every topic. Paste the relevant notes or tell me the subject and I’ll help organise the next step.';}
+async function askAI(message){const api=backend();if(!api)return offlineStudyTool(message);const hist=chatHistory.slice(-12).map(x=>({role:x.role==='user'?'user':'model',text:x.text}));try{const r=await fetch(api+'/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message,history:hist})});const data=await r.json().catch(()=>({}));if(!r.ok)throw new Error(data.error||'Backend request failed ('+r.status+').');if(!data.reply)throw new Error('Verity returned an empty reply.');return data.reply;}catch(e){return 'I could not reach the configured backend, so I switched to local offline help.\n\n'+offlineStudyTool(message);}}
+$('chatForm').addEventListener('submit',async e=>{e.preventDefault();const msg=$('chatInput').value.trim();if(!msg)return;$('chatInput').value='';appendMessage('user',msg);$('sendBtn').disabled=true;$('chatStatus').textContent='Verity is thinking…';try{const reply=await askAI(msg);appendMessage('verity',reply);$('chatStatus').textContent=backend()?'Backend response received.':'Offline mode · your message stayed in this browser.';$('chatStatus').className='status good';}catch(err){appendMessage('verity','I hit a snag: '+err.message+'\n\nOpen Settings and test your backend connection.');$('chatStatus').textContent=err.message;$('chatStatus').className='status bad';}finally{$('sendBtn').disabled=false;$('chatInput').focus();}});
+$('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('chatForm').requestSubmit();}});$('clearChat').addEventListener('click',()=>{if(!confirm('Clear the messages shown in this chat? Saved history will remain in History.'))return;$('messages').innerHTML='';const d=document.createElement('div');d.className='msg verity';d.textContent='Fresh page, fresh case. What are we solving?';$('messages').appendChild(d);});
+async function toolAsk(inputId,resultId,buttonId,prompt){const topic=$(inputId).value.trim();if(!topic){$(resultId).textContent='Add a topic or some notes first.';$(resultId).classList.remove('hidden');return;}const b=$(buttonId);b.disabled=true;b.textContent='Verity is working…';const out=$(resultId);out.classList.remove('hidden');out.textContent='Thinking…';try{out.textContent=await askAI(prompt(topic));chatHistory.push({role:'verity',text:'Study tool result: '+out.textContent,at:new Date().toISOString()});saveState();}catch(e){out.textContent='Could not generate this yet: '+e.message;}finally{b.disabled=false;}}
+$('summaryBtn').onclick=()=>toolAsk('summaryInput','summaryResult','summaryBtn',t=>'Create a clear student-friendly revision summary of these notes/topic. Use headings, key facts, definitions and a short recap. Do not invent facts.\n\n'+t);
+$('flashBtn').onclick=()=>toolAsk('flashInput','flashResult','flashBtn',t=>'Create 8 useful flashcards from this topic/notes. Format each as Q: ... and A: ... Keep answers concise and accurate.\n\n'+t);
+$('writeBtn').onclick=()=>toolAsk('writeInput','writeResult','writeBtn',t=>'Help improve this school writing. First give 3 specific suggestions, then provide an improved version while preserving the student’s ideas and level. If it is an assignment prompt, help plan rather than pretending it is their completed work.\n\n'+t);
+$('explainBtn').onclick=()=>toolAsk('explainInput','explainResult','explainBtn',t=>'Explain this to a secondary-school student in Singapore, starting simple, then show a worked example and common mistake.\n\n'+t);
+function makeOfflineQuiz(topic,level){const t=topic.toLowerCase();const banks=[
+{keys:['ratio'],qs:[['Simplify the ratio 12:18.',['2:3','3:2','6:9','4:9'],0,'Divide both parts by their greatest common factor, 6.'],['A drink uses 2 cups of concentrate for 5 cups of water. How many cups of water for 4 cups of concentrate?',['5','7','10','12'],2,'The scale factor is 2, so water is 5 × 2 = 10 cups.'],['A class has 12 boys and 8 girls. What is the ratio of boys to girls in simplest form?',['2:3','3:2','12:20','8:12'],1,'12:8 simplifies to 3:2.'],['Which ratio is equivalent to 3:4?',['6:8','6:7','9:16','4:3'],0,'Multiply both terms by 2 to get 6:8.'],['A recipe serves 4 and needs 300 g flour. How much flour for 8 servings?',['150 g','450 g','600 g','900 g'],2,'Double the servings, so double the flour: 600 g.']]},
+{keys:['fraction'],qs:[['What is 1/4 + 1/4?',['1/8','1/2','2/8','1/4'],1,'1/4 + 1/4 = 2/4 = 1/2.'],['Which is equivalent to 3/4?',['6/10','9/12','6/12','12/18'],1,'Multiply numerator and denominator by 3: 9/12.'],['What is 2/3 of 18?',['6','9','12','15'],2,'18 ÷ 3 × 2 = 12.'],['Which fraction is largest?',['1/2','2/3','3/8','5/12'],1,'2/3 is about 0.667, larger than the other choices.'],['What is 3/5 written as a percentage?',['30%','35%','50%','60%'],3,'3 ÷ 5 = 0.6 = 60%.']]},
+{keys:['percent','percentage'],qs:[['What is 20% of 60?',['6','12','20','30'],1,'0.20 × 60 = 12.'],['Write 0.35 as a percentage.',['3.5%','35%','350%','0.35%'],1,'Multiply a decimal by 100 to get a percentage.'],['A $40 item is discounted by 25%. What is the discount?',['$5','$10','$15','$20'],1,'25% of $40 is 0.25 × 40 = $10.'],['A score rises from 40 to 50. What is the increase?',['10%','20%','25%','50%'],2,'Increase is 10; 10 ÷ 40 × 100% = 25%.'],['What is 5% of 200?',['5','10','20','40'],1,'0.05 × 200 = 10.']]},
+{keys:['cell','biology'],qs:[['Which cell part controls what enters and leaves the cell?',['Nucleus','Cell membrane','Cytoplasm','Cell wall'],1,'The cell membrane regulates movement into and out of the cell.'],['Which structure contains genetic information in a typical plant or animal cell?',['Nucleus','Vacuole','Cell wall','Chloroplast'],0,'The nucleus contains the cell’s genetic material.'],['Which structure is found in plant cells but not animal cells?',['Cell membrane','Cytoplasm','Cell wall','Nucleus'],2,'Plant cells have a cell wall; animal cells do not.'],['Where do many chemical reactions occur in a cell?',['Cytoplasm','Cell wall','Cell membrane only','Vacuole only'],0,'The cytoplasm is where many cellular reactions take place.'],['Which structure helps a plant cell carry out photosynthesis?',['Mitochondrion','Chloroplast','Nucleus','Cell membrane'],1,'Chloroplasts contain chlorophyll and are the site of photosynthesis.']]},
+{keys:['photosynthesis'],qs:[['What energy source drives photosynthesis?',['Sound','Light','Wind','Soil'],1,'Photosynthesis uses light energy.'],['Which gas is taken in during photosynthesis?',['Oxygen','Nitrogen','Carbon dioxide','Hydrogen'],2,'Plants take in carbon dioxide to make glucose.'],['Which substance is produced and used by plants as food?',['Glucose','Sand','Protein only','Salt'],0,'Photosynthesis produces glucose.'],['Which gas is released during photosynthesis?',['Carbon dioxide','Oxygen','Nitrogen','Helium'],1,'Oxygen is released as a product.'],['Which pigment absorbs light for photosynthesis?',['Haemoglobin','Chlorophyll','Melanin','Keratin'],1,'Chlorophyll absorbs light energy.']]},
+{keys:['force','motion'],qs:[['A force is best described as…',['a push or pull','a type of light','a unit of time','a form of matter'],0,'A force is a push or pull.'],['What can an unbalanced force change?',['Only colour','Speed or direction','Only mass','Only temperature'],1,'Unbalanced forces can cause acceleration.'],['What is the SI unit of force?',['Joule','Watt','Newton','Metre'],2,'Force is measured in newtons (N).'],['If forces on an object are balanced, the resultant force is…',['1 N','equal to its mass','zero','always 10 N'],2,'Balanced forces cancel, giving zero resultant force.'],['Friction usually acts…',['in the direction of motion only','against relative motion','only in liquids','without contact ever'],1,'Friction opposes relative motion between surfaces.']]},
+{keys:['electric','circuit','current'],qs:[['What must a simple circuit have for current to flow?',['A complete path','A broken wire','No power source','Only one terminal'],0,'A complete conducting path is needed.'],['In a series circuit, the current through each component is…',['always different','the same','always zero','unrelated'],1,'There is one path, so the same current passes through components.'],['What is the unit of electric current?',['Volt','Ohm','Ampere','Watt'],2,'Current is measured in amperes (A).'],['What does a switch do in a circuit?',['Stores all the energy','Opens or closes the path','Creates wire','Measures mass'],1,'A switch can break or complete the circuit.'],['In a parallel circuit, components are connected on…',['separate branches','one single path only','no wires','the same battery terminal only'],0,'Parallel components have separate branches.']]},
+{keys:['grammar','english','punctuation'],qs:[['Which sentence has correct capitalisation?',['my friend lives in singapore.','My friend lives in Singapore.','My Friend lives in singapore.','my Friend lives in Singapore.'],1,'Start the sentence with a capital and capitalise the place name.'],['Which word is a verb in “The cat jumped quickly”?',['cat','quickly','jumped','the'],2,'“Jumped” expresses the action.'],['Which punctuation mark normally ends a direct question?',['Comma','Full stop','Question mark','Colon'],2,'A direct question normally ends with a question mark.'],['Which is a conjunction?',['although','blue','carefully','table'],0,'“Although” joins clauses and introduces a contrast.'],['Which sentence uses past tense?',['She walks home.','She will walk home.','She walked home.','She is walking home.'],2,'“Walked” is the past-tense form.']]},
+{keys:['area','perimeter','rectangle'],qs:[['A rectangle is 6 cm long and 4 cm wide. What is its area?',['10 cm²','20 cm²','24 cm²','24 cm'],2,'Area = length × width = 6 × 4 = 24 cm².'],['A rectangle is 6 cm long and 4 cm wide. What is its perimeter?',['10 cm','20 cm','24 cm','24 cm²'],1,'Perimeter = 2 × (6 + 4) = 20 cm.'],['Which unit is suitable for area?',['cm','cm²','cm³','kg'],1,'Area is measured in square units.'],['A square has side length 5 cm. What is its perimeter?',['10 cm','20 cm','25 cm²','25 cm'],1,'Perimeter = 4 × 5 = 20 cm.'],['A square has side length 5 cm. What is its area?',['20 cm','10 cm²','25 cm²','25 cm'],2,'Area = 5 × 5 = 25 cm².']]}
+];let bank=banks.find(b=>b.keys.some(k=>t.includes(k)));if(!bank){const notes=topic.split(/[.!?\n]+/).map(x=>x.trim()).filter(x=>x.length>18);if(notes.length>=3){return notes.slice(0,5).map((x,i)=>({question:'Which statement matches your pasted notes? (Question '+(i+1)+')',options:[x,'This detail is not stated in the selected notes.','The opposite of the selected note.','A random unrelated statement.'],answer:0,explanation:'This option reproduces one of the note statements you supplied.'}));}return null;}let qs=bank.qs.slice();if(level==='Hard')qs=qs.slice().reverse();return qs.map(q=>({question:q[0],options:q[1],answer:q[2],explanation:q[3]}));}
+$('makeQuiz').onclick=async()=>{const topic=$('quizTopic').value.trim();if(!topic){$('quizStatus').textContent='Enter a topic first.';return;}const b=$('makeQuiz');b.disabled=true;b.textContent='Making quiz…';$('quizArea').innerHTML='';$('quizStatus').textContent='Verity is writing questions…';try{const api=backend();if(api){const raw=await askAI('Create exactly 5 multiple-choice quiz questions on this topic: '+topic+'. Difficulty: '+$('quizLevel').value+'. Return ONLY valid JSON array with objects like {"question":"...","options":["...","...","...","..."],"answer":0,"explanation":"..."}. answer is zero-based index. No markdown fences. Ensure exactly 4 options and one correct answer each.');let clean=raw.replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'');const start=clean.indexOf('['),end=clean.lastIndexOf(']');if(start<0||end<0)throw new Error('Quiz response was not in the expected format.');quizData=JSON.parse(clean.slice(start,end+1)).slice(0,5);}else{quizData=makeOfflineQuiz(topic,$('quizLevel').value);if(!quizData)throw new Error('This topic is not in the offline quiz bank yet. Try ratios, fractions, percentages, cells, photosynthesis, forces, electricity, grammar, area/perimeter, or paste at least three full notes sentences into the topic box.');}if(!quizData.length)throw new Error('No questions were generated.');quizAnswered=0;quizCorrect=0;renderQuiz();$('quizStatus').textContent=api?'Quiz ready from backend.':'Offline quiz ready. Questions are built into this browser, not generated by AI.';}catch(e){$('quizStatus').textContent='Could not make quiz: '+e.message;}finally{b.disabled=false;b.textContent='Generate 5 questions';}};
+function renderQuiz(){const area=$('quizArea');area.innerHTML='';quizData.forEach((q,i)=>{const card=document.createElement('div');card.className='card';card.style.marginTop='12px';const h=document.createElement('h3');h.textContent=(i+1)+'. '+q.question;card.appendChild(h);(q.options||[]).forEach((opt,j)=>{const b=document.createElement('button');b.className='quizoption';b.textContent=String.fromCharCode(65+j)+'. '+opt;b.onclick=()=>{if(card.dataset.done)return;card.dataset.done='1';quizAnswered++;const ok=j===Number(q.answer);if(ok)quizCorrect++;b.classList.add(ok?'correct':'wrong');if(!ok&&card.querySelectorAll('button')[Number(q.answer)])card.querySelectorAll('button')[Number(q.answer)].classList.add('correct');const expl=document.createElement('p');expl.className='muted tiny';expl.textContent=(ok?'Correct! ':'Not quite. ')+(q.explanation||'');card.appendChild(expl);$('quizScore').textContent='Score: '+quizCorrect+' / '+quizAnswered; if(quizAnswered===quizData.length)$('quizStatus').textContent='Finished! You scored '+quizCorrect+' out of '+quizData.length+'.';};card.appendChild(b);});area.appendChild(card);});$('quizScore').textContent='Score: 0 / 0';}
+$('imageFile').addEventListener('change',e=>{const file=e.target.files?.[0];selectedImageData='';if(!file){$('imagePreview').classList.add('hidden');return;}if(!['image/png','image/jpeg','image/webp'].includes(file.type)){$('imageStatus').textContent='Choose a PNG, JPG or WebP image.';e.target.value='';return;}if(file.size>7*1024*1024){$('imageStatus').textContent='Image is too large. Choose a file under 7 MB.';e.target.value='';return;}const reader=new FileReader();reader.onload=()=>{selectedImageData=reader.result;$('imagePreview').src=selectedImageData;$('imagePreview').classList.remove('hidden');$('imageStatus').textContent='Preview ready. It has not been sent.';};reader.readAsDataURL(file);});
+$('analyzeImage').onclick=async()=>{if(!selectedImageData){$('imageStatus').textContent='Choose an image first.';return;}if(!confirm('Send this selected image and your question to your configured AI backend for analysis?'))return;const api=backend();if(!api){$('imageStatus').textContent='Offline mode cannot read the image automatically. Nothing was uploaded. Please type the question or copy the worksheet text into Verity Chat; your image stays in this browser.';$('imageResult').textContent='Image preview is available, but offline mode has no OCR/vision model. Type the visible question to get help.';return;}const b=$('analyzeImage');b.disabled=true;b.textContent='Analyzing…';$('imageResult').textContent='Verity is examining the image…';try{const r=await fetch(api+'/api/analyze-image',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:selectedImageData,question:$('imageQuestion').value.trim()})});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Request failed ('+r.status+').');$('imageResult').textContent=d.reply||'No answer returned.';$('imageStatus').textContent='Analysis complete.';$('imageStatus').className='status good';}catch(e){$('imageResult').textContent='Image analysis failed: '+e.message;$('imageStatus').textContent=e.message;$('imageStatus').className='status bad';}finally{b.disabled=false;b.textContent='Analyze image';}};
+$('saveBackend').onclick=()=>{const val=$('backendUrl').value.trim().replace(/\/$/,'');if(val&&!/^https?:\/\//i.test(val)){$('backendStatus').textContent='Enter a full URL beginning with https://';$('backendStatus').className='status bad';return;}localStorage.setItem(API_KEY,val);$('backendUrl').value=val;saveState();$('backendStatus').textContent=val?'Backend URL saved in this browser.':'Backend URL cleared.';$('backendStatus').className='status good';};
+$('testBackend').onclick=async()=>{const api=backend();if(!api){$('backendStatus').textContent='Paste the backend URL first.';$('backendStatus').className='status bad';return;}$('backendStatus').textContent='Testing connection…';try{const r=await fetch(api+'/api/health');const d=await r.json();if(!r.ok||!d.ok)throw new Error('Health check failed.');$('backendStatus').textContent='Connected. AI key '+(d.aiConfigured?'is configured':'is missing')+'. Model: '+d.model;$('backendStatus').className='status '+(d.aiConfigured?'good':'bad');$('connectionPill').textContent=d.aiConfigured?'AI connected':'Backend connected · key missing';$('modelStatus').textContent=d.model+' · '+(d.aiConfigured?'AI configured':'GEMINI_API_KEY missing');}catch(e){$('backendStatus').textContent='Connection failed: '+e.message+' Check the URL, that Replit is running, and the CORS setting.';$('backendStatus').className='status bad';$('connectionPill').textContent='AI not connected';}};
+function renderHistory(){const list=$('historyList');list.innerHTML='';if(!chatHistory.length){list.innerHTML='<p class="muted">Nothing saved yet.</p>';return;}chatHistory.slice().reverse().forEach(item=>{const d=document.createElement('div');d.className='historyitem';const meta=document.createElement('div');meta.className='eyebrow';meta.textContent=(item.role==='user'?'YOU':'VERITY')+' · '+(item.at?new Date(item.at).toLocaleString():'');const p=document.createElement('p');p.textContent=item.text;d.append(meta,p);list.appendChild(d);});}
+$('clearHistory').onclick=()=>{if(!confirm('Delete all locally saved history? This cannot be undone.'))return;chatHistory=[];saveState();renderHistory();};loadState();if(localStorage.getItem(API_KEY)&&!$('backendUrl').value)$('backendUrl').value=localStorage.getItem(API_KEY);
+</script></body></html>
